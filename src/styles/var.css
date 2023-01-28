@@ -1,0 +1,7 @@
+:root {
+  /** color relevant */
+  --sb-theme-color: #11b189;
+
+  --sb-header-height: 0px;
+  --sb-sidebar-width: 210px;
+}
