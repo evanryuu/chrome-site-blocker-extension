@@ -90,14 +90,14 @@ const addUrl = async () => {
       ];
       setItem(URLS, allUrls);
       urls.value.push({ url: ruleForm.value.url });
+
+      ElMessage({
+        type: 'success',
+        message: 'Add completed',
+      });
+      ruleForm.value.url = '';
     }
   });
-
-  ElMessage({
-    type: 'success',
-    message: 'Add completed',
-  });
-  ruleForm.value.url = '';
 };
 
 const appStatusChanged = (val: boolean) => {

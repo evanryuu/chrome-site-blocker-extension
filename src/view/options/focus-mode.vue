@@ -6,11 +6,16 @@ import type { FormInstance } from 'element-plus';
 import type { IFocusModeSetting, IStageQuene } from '@/utils';
 import type { ICountdown, IUrl } from '@/@types/index.d';
 
-import { getItem, setItem, initFocusQuene as initQuene } from '@/utils';
+import { getItem, setItem, initFocusQuene as initQuene, validateUrl } from '@/utils';
 import { FOCUS_MODE_SETTING, FOCUS_QUENE, MIN, URLS } from '@/config/constant';
 
 const timeFormRef = ref<FormInstance>();
 const focusQuene = ref<IStageQuene[]>([]);
+
+const ruleFormRef = ref<FormInstance>();
+const ruleForm = ref<IUrl>({
+  url: '',
+});
 
 const focusModeSetting = ref<IFocusModeSetting>({
   duration: 0,
@@ -19,6 +24,18 @@ const focusModeSetting = ref<IFocusModeSetting>({
   same: false,
   urls: [],
 });
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const checkUrl = (_rule: any, value: any, callback: any) => {
+  if (!value) {
+    return callback(new Error('Please input the url'));
+  }
+
+  if (!validateUrl(value)) {
+    return callback(new Error('Url form is not correct'));
+  }
+  return callback();
+};
 
 const rules = ref({
   duration: [
@@ -33,6 +50,10 @@ const rules = ref({
     { required: true, message: 'Please input how many rounds you want to focus', trigger: 'blur' },
     { min: 0, max: 50, message: 'Length should be above 0', trigger: 'blur' },
   ],
+});
+
+const urlRules = ref({
+  url: [{ validator: checkUrl, trigger: 'blur' }],
 });
 
 const sameSetting = computed(() => (focusModeSetting.value.same ? 'ON' : 'OFF'));
@@ -104,6 +125,8 @@ const onCountdownEnd = () => {
 
 const initFocusModeSetting = async () => {
   const res = await getItem(FOCUS_MODE_SETTING);
+  console.log(FOCUS_MODE_SETTING, res);
+
   focusModeSetting.value = res;
 };
 
@@ -117,6 +140,27 @@ const countdown = computed(() => (focusQuene.value.length
   : 0));
 
 const getIconUrl = (path: string) => `http://www.google.com/s2/favicons?domain=${path}`;
+
+const addUrl = async () => {
+  if (!ruleFormRef.value) return;
+
+  await ruleFormRef.value.validate((valid) => {
+    if (valid) {
+      const allUrls = [
+        ...focusModeSetting.value.urls,
+        { url: ruleForm.value.url },
+      ];
+      setItem(URLS, allUrls);
+      focusModeSetting.value.urls.push({ url: ruleForm.value.url });
+
+      ElMessage({
+        type: 'success',
+        message: 'Add completed',
+      });
+      ruleForm.value.url = '';
+    }
+  });
+};
 
 const handleButtonClicked = (url: IUrl) => {
   ElMessageBox.confirm(
@@ -217,6 +261,18 @@ initFocusModeSetting();
         </div>
 
       </div>
+      <!-- S Input Section -->
+      <div class="url-input-container">
+        <el-form ref="ruleFormRef" :model="ruleForm" :rules="urlRules" @keyup.enter="addUrl">
+          <el-form-item prop="url">
+            <el-input v-model="ruleForm.url" type="text" autocomplete="off"
+              placeholder="Enter a website, such as twitter.com" clearable />
+          </el-form-item>
+        </el-form>
+        <el-button @click="addUrl">Add</el-button>
+      </div>
+      <!-- S Input Section -->
+
       <!-- S Table Section -->
       <el-table class="url-table" :data="focusModeSetting.urls" style="width: 100%;">
         <el-table-column label="Blocked Url In Focus Mode">
@@ -240,3 +296,24 @@ initFocusModeSetting();
   </div>
 
 </template>
+
+<style scoped>
+.url-input-container {
+  display: flex;
+}
+
+.url-input-container>form {
+  flex: 1;
+  max-width: 800px;
+}
+
+.url-input-container>button {
+  margin-left: 12px;
+}
+
+.url-icon {
+  margin-right: 8px;
+  border: 1px solid var(--el-color-info-light-5);
+  border-radius: 4px;
+}
+</style>

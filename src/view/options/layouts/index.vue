@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import { initOptions } from '@/utils/app';
 import AppMain from './app-main.vue';
 import Sidebar from './sidebar.vue';
 
+initOptions();
 // const handleOpen = (key: string, keyPath: string[]) => {
 //   console.log(key, keyPath);
 // };

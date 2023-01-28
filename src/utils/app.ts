@@ -1,5 +1,28 @@
 import { FOCUS_QUENE } from '@/config/constant';
-import { getItem, setItem } from './storage';
+import { getItem, IStorage, setItem, IFocusModeSetting } from './storage';
+
+export const initOptions = async () => {
+  const defaultData: IStorage = {
+    appStatus: false,
+    urls: [],
+    focusQuene: [],
+    focusModeSetting: {
+      duration: 25,
+      relaxing: 5,
+      repeat: 2,
+      same: false,
+      urls: [],
+    },
+    whiteListMode: false,
+  };
+
+  (Object.keys(defaultData) as Array<keyof typeof defaultData>).forEach(async (key) => {
+    const storageData = await getItem(key);
+    if (storageData === undefined || storageData === null) {
+      setItem(key, defaultData[key]);
+    }
+  });
+};
 
 export const initFocusQuene = async () => {
   const focusQuene = await getItem(FOCUS_QUENE);
