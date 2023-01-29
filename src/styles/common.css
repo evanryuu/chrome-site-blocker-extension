@@ -26,7 +26,7 @@
   margin-top: 16px;
 }
 .mt-5 {
-  margin-top: 20x;
+  margin-top: 20px;
 }
 .mt-6 {
   margin-top: 24px;
@@ -51,7 +51,7 @@
   margin-left: 16px;
 }
 .ml-5 {
-  margin-left: 20x;
+  margin-left: 20px;
 }
 .ml-6 {
   margin-left: 24px;
@@ -76,7 +76,7 @@
   margin-right: 16px;
 }
 .mr-5 {
-  margin-right: 20x;
+  margin-right: 20px;
 }
 .mr-6 {
   margin-right: 24px;
@@ -105,8 +105,8 @@
   padding-bottom: 16px;
 }
 .py-5 {
-  padding-top: 20x;
-  padding-bottom: 20x;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 .py-6 {
   padding-top: 24px;
@@ -138,8 +138,8 @@
   padding-left: 16px;
 }
 .px-5 {
-  padding-right: 20x;
-  padding-left: 20x;
+  padding-right: 20px;
+  padding-left: 20px;
 }
 .px-6 {
   padding-right: 24px;
@@ -154,8 +154,24 @@
   padding-left: 32px;
 }
 
-.title {
+.text-12 {
+  font-size: 12px;
+}
+.text-14 {
+  font-size: 14px;
+}
+.text-16 {
+  font-size: 16px;
+}
+.text-18 {
   font-size: 18px;
+}
+.text-20 {
+  font-size: 20px;
+}
+
+.title {
+  font-size: 20px;
   font-weight: 600;
   line-height: 24px;
 }
@@ -164,4 +180,8 @@
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
+}
+
+.semi-bold {
+  font-weight: 600;
 }

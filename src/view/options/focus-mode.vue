@@ -203,8 +203,9 @@ initFocusModeSetting();
 
 <template>
   <div id="focus-mode-page">
+    <div class="semi-bold text-14">Loop Settings</div>
     <!-- S Upper Section -->
-    <div class="flex">
+    <div class="flex mt-3">
       <!-- S Form section -->
       <el-form ref="timeFormRef" :model="focusModeSetting" status-icon :rules="rules" label-width="120px"
         label-position="top" class="demo-timeForm">
@@ -251,7 +252,7 @@ initFocusModeSetting();
     <!-- S URL Section -->
     <div>
       <div>
-        <div class="subtitle">Focus Mode Blocklist</div>
+        <div class="semi-bold text-14">Focus Mode Blocklist</div>
         <div class="flex items-center py-2">
           <div>Same as site settings?</div>
           <el-radio-group class="ml-4" @change="handleSameChange" :model-value="sameSetting">

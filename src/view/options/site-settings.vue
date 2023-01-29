@@ -118,7 +118,8 @@ initWhiteList();
 
 <template>
   <div id="site-settings-page">
-    <div class="extension-status">
+    <div class="semi-bold text-14">General</div>
+    <div class="extension-status mt-2">
       <span>Extension is {{ appStatus ? 'on' : 'off' }} </span>
       <el-switch style="margin-left: 20px;" v-model="appStatus" @change="appStatusChanged"></el-switch>
     </div>
@@ -126,6 +127,8 @@ initWhiteList();
       <span>White List Mode is {{ whiteListMode ? 'on' : 'off' }} </span>
       <el-switch style="margin-left: 20px;" v-model="whiteListMode" @change="whiteListModeChanged"></el-switch>
     </div>
+
+    <div class="semi-bold mt-5 text-14">Block List</div>
     <div class="url-input-container">
       <el-form
       ref="ruleFormRef"
