@@ -86,7 +86,7 @@ initFocusQuene();
 <template>
   <div class="app">
     <div class="header-container">
-      <div class="title">
+      <div class="title flex justify-between">
         <span>Site blocker</span>
         <el-icon @click="gotoOption" :size="24">
           <Setting />

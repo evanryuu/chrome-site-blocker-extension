@@ -21,6 +21,10 @@
         "48": "images/icon.png",
         "128": "images/icon.png"
       },
+    "web_accessible_resources": [{
+        "resources": ["options.html", "images/*.png", "images/BlockSite-002b.jpg"],
+        "matches": ["<all_urls>"]
+      }],
     "content_scripts": [
         {
             "run_at": "document_start",
