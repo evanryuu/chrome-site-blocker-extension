@@ -21,7 +21,15 @@ Hi! Welcome to this project!😙
 I'm currently working on it. Please leave an issue if you think there could be any improvement. Appreciate it! 😋  
 
 ## Quick Start
-I haven't registered an account for publishing extensions on the markets, so the simplest way to use the extension is follow the steps below:
+I haven't registered an account for publishing extensions on the markets, so the simplest way to use the extension is follow the steps below:  
+
+1. Download the `dist.zip` through [here](https://github.com/evankwolf/chrome-site-blocker-extension/releases/tag/Latest)
+2. Unzip it and then open your Chrome
+3. Navigate to [Extension Page](chrome://extensions/). Make sure the `Developer Mode` is on.
+4. Select `Load unpacked` and upload the folder unzipped in the 2nd step.
+5. Have fun using the extension! 😉  
+
+Or
 1. Clone or download the project
 2. npm install
 3. npm run build
@@ -29,6 +37,7 @@ I haven't registered an account for publishing extensions on the markets, so the
 5. Open `Developer Mode` and then choose `Load unpacked` to upload the `dist` folder generated in the 3rd step.
 6. Have fun using the extension! 😉
 
+(Focus Mode is still under development. It's kinda like [Pomodoro Technique](https://en.wikipedia.org/wiki/Pomodoro_Technique). Please follow the latest release you are intersted in the function.)
 ## Project setup
 ```
 npm install
