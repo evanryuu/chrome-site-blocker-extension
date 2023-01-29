@@ -1,6 +1,4 @@
 <script setup lang='ts'>
-import { ref } from 'vue';
-
 import { getRandomNumber } from '@/utils/number';
 
 const imgUrl = chrome.runtime.getURL(`images/pic${getRandomNumber(1, 10)}.png`);

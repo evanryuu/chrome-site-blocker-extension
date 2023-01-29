@@ -1,5 +1,5 @@
 import { FOCUS_QUENE } from '@/config/constant';
-import { getItem, IStorage, setItem, IFocusModeSetting } from './storage';
+import { getItem, IStorage, setItem } from './storage';
 
 export const initOptions = async () => {
   const defaultData: IStorage = {

@@ -5,7 +5,7 @@ import type { IFocusModeSetting, IStageQuene } from '@/utils/storage';
 import type { ICountdown } from '@/@types/index.d';
 
 import { getItem, setItem } from '@/utils';
-import { FOCUS_MODE_SETTING, FOCUS_QUENE, MIN } from '@/config/constant';
+import { FOCUS_MODE_SETTING, FOCUS_QUENE } from '@/config/constant';
 
 const emit = defineEmits(['countdownEnd']);
 
