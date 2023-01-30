@@ -5,3 +5,4 @@ export * from './validate';
 export * from './app';
 export * from './number';
 export * from './time';
+export * from './chrome';

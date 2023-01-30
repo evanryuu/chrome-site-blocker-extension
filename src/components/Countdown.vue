@@ -4,8 +4,8 @@ import { ref, computed, defineEmits } from 'vue';
 import type { IFocusModeSetting, IStageQuene } from '@/utils/storage';
 import type { ICountdown } from '@/@types/index.d';
 
-import { getItem, setItem } from '@/utils';
-import { FOCUS_MODE_SETTING, FOCUS_QUENE } from '@/config/constant';
+import { getItem, setBadge, setItem } from '@/utils';
+import { FOCUS_MODE_SETTING, FOCUS_QUENE, APP_STATUS } from '@/config/constant';
 
 const emit = defineEmits(['countdownEnd']);
 
@@ -34,11 +34,17 @@ const onCountdownProgress = async (data: ICountdown) => {
   setFocusQuene(quene);
 };
 
-const onCountdownEnd = () => {
+const onCountdownEnd = async () => {
   const quene = focusQuene.value.slice(1);
   setFocusQuene(quene);
   if (quene.length === 0) {
+    const appStatus = await getItem(APP_STATUS);
+    setBadge(appStatus ? 'ON' : 'OFF');
     emit('countdownEnd');
+  } else {
+    console.log('setBadge', quene[0].stage === 'focusing' ? '🕔' : '☕');
+
+    setBadge(quene[0].stage === 'focusing' ? '🕔' : '☕');
   }
 };
 

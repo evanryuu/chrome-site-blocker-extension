@@ -17,7 +17,8 @@ import type { IFocusModeSetting, IStageQuene } from '@/utils';
 import type { ICountdown, IUrl } from '@/@types/index.d';
 
 import { getItem, setItem, initFocusQuene as initQuene, validateUrl } from '@/utils';
-import { FOCUS_MODE_SETTING, FOCUS_QUENE, MIN, URLS } from '@/config/constant';
+import { APP_STATUS, FOCUS_MODE_SETTING, FOCUS_QUENE, MIN, URLS } from '@/config/constant';
+import { setBadge } from '../../utils/chrome';
 
 const timeFormRef = ref<FormInstance>();
 const focusQuene = ref<IStageQuene[]>([]);
@@ -78,9 +79,11 @@ const setFocusQuene = (quene: IStageQuene[]) => {
   focusQuene.value = quene;
 };
 
-const resetForm = (formEl: FormInstance | undefined) => {
+const resetForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
+  const appStatus = await getItem(APP_STATUS);
+  setBadge(appStatus ? 'ON' : 'OFF');
   setFocusQuene([]);
 };
 
@@ -112,6 +115,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
           end: start + (i + 1) * (relaxing + duration) * MIN,
         });
       }
+      setBadge('🕔');
       setFocusQuene(quene);
       setFocusSetting(focusModeSetting.value);
       return true;
@@ -122,9 +126,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
 };
 
 const onCountdownProgress = async (data: ICountdown) => {
-  console.log('onCountdownProgress', data);
-
-  // const quene = await getItem(FOCUS_QUENE);
   const quene = focusQuene.value.slice();
   quene[0].duration = data.totalSeconds * 1000;
   setFocusQuene(quene);

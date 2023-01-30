@@ -41,7 +41,6 @@ export const setItem = <K extends keyof IStorage>(
   key: K,
   val: IStorage[K],
 ) => new Promise((resolve, reject) => {
-    console.log('set', key, 'val', val, 'json', { [key]: val });
     if (val === undefined) {
       throw new Error('Cannot set val as undefined.');
     }
