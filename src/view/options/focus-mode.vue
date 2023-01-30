@@ -102,13 +102,13 @@ const submitForm = (formEl: FormInstance | undefined) => {
           duration: duration * MIN,
           stage: 'focusing',
           start: start + i * (relaxing + duration) * MIN,
-          end: start + (i + 1) * duration * MIN,
+          end: start + ((i + 1) * duration + i * relaxing) * MIN,
         });
         quene.push({
           id: length + 2,
           duration: relaxing * MIN,
           stage: 'relaxing',
-          start: start + (i + 1) * duration * MIN,
+          start: start + ((i + 1) * duration + i * relaxing) * MIN,
           end: start + (i + 1) * (relaxing + duration) * MIN,
         });
       }
@@ -130,9 +130,10 @@ const onCountdownProgress = async (data: ICountdown) => {
   setFocusQuene(quene);
 };
 
-const onCountdownEnd = () => {
-  setFocusQuene(focusQuene.value.slice(1));
-};
+// const onCountdownEnd = () => {
+//   // popup.vue also does this, so we don't need to do it twice
+//   setFocusQuene(focusQuene.value.slice(1));
+// };
 
 const initFocusModeSetting = async () => {
   focusModeSetting.value = await getItem(FOCUS_MODE_SETTING);
@@ -235,7 +236,7 @@ initFocusModeSetting();
       <!-- S Coundown section -->
       <div class="countdown-container">
         <vue-countdown v-if="focusQuene.length" auto-start :time="countdown"
-          @progress="(data: ICountdown) => onCountdownProgress(data)" @end="onCountdownEnd"
+          @progress="(data: ICountdown) => onCountdownProgress(data)" @end="initFocusQuene"
           v-slot="{ hours, minutes, seconds }">
           <h2 class="subtitle">{{ focusQuene[0].stage }}</h2>
           {{ `Remaining：🕔 ${hours} hrs, ${minutes} minutes, ${seconds} seconds.` }}
