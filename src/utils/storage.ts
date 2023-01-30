@@ -13,6 +13,7 @@ export interface IFocusModeSetting {
   relaxing: number
   repeat: number
   same: boolean
+  whiteListMode: boolean
   urls: IUrl[]
 }
 
@@ -28,13 +29,24 @@ export interface IStorage {
 export const getItem = <K extends keyof IStorage>(
   key: K,
 ): Promise<IStorage[K]> => new Promise((resolve, reject) => {
-    chrome.storage.local.get([key]).then((res) => resolve(res[key])).catch(reject);
+    chrome.storage.local.get([key])
+    // if you just resolve(res[key]) without transforming JSON, somehow the focusModeSetting.urls will be set as Object for some reasons.
+    // no idea what cause the problem
+      // .then((res) => resolve(res[key]))
+      .then((res) => resolve(res[key] === undefined ? undefined : JSON.parse(res[key])))
+      .catch(reject);
   });
 
 export const setItem = <K extends keyof IStorage>(
   key: K,
   val: IStorage[K],
 ) => new Promise((resolve, reject) => {
-    chrome.storage.local.set({ [key]: val })
-      .then(() => resolve(true)).catch(reject);
+    console.log('set', key, 'val', val, 'json', { [key]: val });
+    if (val === undefined) {
+      throw new Error('Cannot set val as undefined.');
+    }
+    // chrome.storage.local.set({ [key]: val })
+    chrome.storage.local.set({ [key]: JSON.stringify(val) })
+      .then(() => resolve(true))
+      .catch(reject);
   });

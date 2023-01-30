@@ -11,6 +11,7 @@ export const initOptions = async () => {
       relaxing: 5,
       repeat: 2,
       same: false,
+      whiteListMode: false,
       urls: [],
     },
     whiteListMode: false,

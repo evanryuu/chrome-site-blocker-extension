@@ -16,6 +16,7 @@ const focusModeSetting = ref<IFocusModeSetting>({
   relaxing: 0,
   repeat: 0,
   same: false,
+  whiteListMode: false,
   urls: [],
 });
 
@@ -42,8 +43,7 @@ const onCountdownEnd = () => {
 };
 
 const initFocusModeSetting = async () => {
-  const res = await getItem(FOCUS_MODE_SETTING);
-  focusModeSetting.value = res;
+  focusModeSetting.value = await getItem(FOCUS_MODE_SETTING);
 };
 
 const initFocusQuene = async () => {
@@ -72,29 +72,23 @@ initFocusModeSetting();
 <template>
   <!-- S Coundown section -->
   <div class="countdown-container">
-    <vue-countdown v-if="focusQuene.length && focusQuene[0].stage === 'focusing'" auto-start :time="countdown"
+    <vue-countdown v-if="focusQuene.length" auto-start :time="countdown"
       @progress="(data: ICountdown) => onCountdownProgress(data)" @end="onCountdownEnd"
       v-slot="{ hours, minutes, seconds }">
-      <slot name="focusing">
-        <div>{{ focusQuene[0].stage.toUpperCase() }}</div>
-      </slot>
-      {{ `🕔 ${hours} hrs, ${minutes} mins, ${seconds} secs.` }}
+      <h2 class="subtitle">{{ focusQuene[0].stage }}</h2>
+      {{ `Remaining：🕔 ${hours} hrs, ${minutes} minutes, ${seconds} seconds.` }}
+      <div v-if="focusQuene.length">Rounds left: {{ Math.floor(focusQuene.length / 2) }}</div>
     </vue-countdown>
-    <vue-countdown v-if="focusQuene.length && focusQuene[0].stage === 'relaxing'" auto-start :time="countdown"
-      @progress="(data: ICountdown) => onCountdownProgress(data)" @end="onCountdownEnd"
-      v-slot="{ hours, minutes, seconds }">
-      <slot name="relaxing">
-        <div>{{ focusQuene[0].stage.toUpperCase() }}</div>
-      </slot>
-      {{ `🕔 ${hours} hrs, ${minutes} mins, ${seconds} secs.` }}
-    </vue-countdown>
-
-    <br>
-    Rounds left: {{ Math.floor(focusQuene.length / 2) }}
   </div>
   <!-- E Coundown section -->
 </template>
 
 <style scoped>
-
+.countdown-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 </style>

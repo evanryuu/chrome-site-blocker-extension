@@ -14,3 +14,5 @@ export interface ICountdown {
   totalSeconds: number,
   totalMilliseconds: number
 }
+
+export type HasAttributeWhenTrue<A extends boolean, B> = A extends true ? B : undefined
