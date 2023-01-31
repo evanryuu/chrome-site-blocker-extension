@@ -15,4 +15,6 @@ export interface ICountdown {
   totalMilliseconds: number
 }
 
+export type UAppStatus = 'focusing' | 'relaxing' | boolean
+
 export type HasAttributeWhenTrue<A extends boolean, B> = A extends true ? B : undefined
