@@ -13,6 +13,7 @@ module.exports = {
     ecmaVersion: 2020,
   },
   rules: {
+    '@typescript-eslint/no-non-null-assertion': 'off',
     'vue/multi-word-component-names': 'off',
     'import/no-extraneous-dependencies': 'off',
     'import/prefer-default-export': 'off',

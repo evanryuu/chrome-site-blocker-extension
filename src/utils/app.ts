@@ -1,4 +1,6 @@
-import { FOCUS_QUENE } from '@/config/constant';
+import { APP_STATUS, FOCUS_QUENE } from '@/config/constant';
+import { UAppStatus } from '@/@types/index.d';
+import { setBadge } from './chrome';
 import { getItem, IStorage, setItem } from './storage';
 
 export const initOptions = async () => {
@@ -11,6 +13,7 @@ export const initOptions = async () => {
       relaxing: 5,
       repeat: 2,
       same: false,
+      whiteListMode: false,
       urls: [],
     },
     whiteListMode: false,
@@ -45,4 +48,31 @@ export const initFocusQuene = async () => {
   setItem(FOCUS_QUENE, res);
 
   return res;
+};
+
+export const specifyAppStatus = async () => {
+  const focusQuene = await getItem(FOCUS_QUENE);
+  if (focusQuene && focusQuene.length > 0) {
+    return focusQuene[0].stage;
+  }
+  const appStatus = await getItem(APP_STATUS);
+  return appStatus;
+};
+
+export const setBadgeByCurrentStatus = async (status?: UAppStatus) => {
+  const returnText = (t: UAppStatus) => {
+    switch (t) {
+      case true: return 'ON';
+      case false: return 'OFF';
+      case 'focusing': return '🕔';
+      case 'relaxing': return '☕';
+      default: return 'OFF';
+    }
+  };
+  if (status === undefined) {
+    // eslint-disable-next-line no-param-reassign
+    status = await specifyAppStatus();
+  }
+
+  setBadge(returnText(status));
 };

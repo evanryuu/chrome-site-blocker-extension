@@ -1,3 +1,13 @@
+<!--
+ * @Author: evankwolf
+ * @Date: 2023-01-29 09:09:50
+ * @LastEditors: evankwolf
+ * @LastEditTime: 2023-01-30 16:16:56
+ * @FilePath: \chrome-site-blocker-extension\src\view\options\focus-mode.vue
+ * @Description:
+ *
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved.
+-->
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
@@ -7,7 +17,8 @@ import type { IFocusModeSetting, IStageQuene } from '@/utils';
 import type { ICountdown, IUrl } from '@/@types/index.d';
 
 import { getItem, setItem, initFocusQuene as initQuene, validateUrl } from '@/utils';
-import { FOCUS_MODE_SETTING, FOCUS_QUENE, MIN, URLS } from '@/config/constant';
+import { APP_STATUS, FOCUS_MODE_SETTING, FOCUS_QUENE, MIN, URLS } from '@/config/constant';
+import { setBadge } from '../../utils/chrome';
 
 const timeFormRef = ref<FormInstance>();
 const focusQuene = ref<IStageQuene[]>([]);
@@ -22,6 +33,7 @@ const focusModeSetting = ref<IFocusModeSetting>({
   relaxing: 0,
   repeat: 0,
   same: false,
+  whiteListMode: false,
   urls: [],
 });
 
@@ -67,9 +79,11 @@ const setFocusQuene = (quene: IStageQuene[]) => {
   focusQuene.value = quene;
 };
 
-const resetForm = (formEl: FormInstance | undefined) => {
+const resetForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
+  const appStatus = await getItem(APP_STATUS);
+  setBadge(appStatus ? 'ON' : 'OFF');
   setFocusQuene([]);
 };
 
@@ -79,6 +93,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
   formEl.validate((valid) => {
     if (valid) {
       const { repeat, duration, relaxing } = focusModeSetting.value;
+      console.log('submit', focusModeSetting.value);
 
       const quene: IStageQuene[] = [];
       const start = Date.now();
@@ -90,17 +105,17 @@ const submitForm = (formEl: FormInstance | undefined) => {
           duration: duration * MIN,
           stage: 'focusing',
           start: start + i * (relaxing + duration) * MIN,
-          end: start + (i + 1) * duration * MIN,
+          end: start + ((i + 1) * duration + i * relaxing) * MIN,
         });
         quene.push({
           id: length + 2,
           duration: relaxing * MIN,
           stage: 'relaxing',
-          start: start + (i + 1) * duration * MIN,
+          start: start + ((i + 1) * duration + i * relaxing) * MIN,
           end: start + (i + 1) * (relaxing + duration) * MIN,
         });
       }
-
+      setBadge('🕔');
       setFocusQuene(quene);
       setFocusSetting(focusModeSetting.value);
       return true;
@@ -111,23 +126,18 @@ const submitForm = (formEl: FormInstance | undefined) => {
 };
 
 const onCountdownProgress = async (data: ICountdown) => {
-  console.log('onCountdownProgress', data);
-
-  // const quene = await getItem(FOCUS_QUENE);
   const quene = focusQuene.value.slice();
   quene[0].duration = data.totalSeconds * 1000;
   setFocusQuene(quene);
 };
 
-const onCountdownEnd = () => {
-  setFocusQuene(focusQuene.value.slice(1));
-};
+// const onCountdownEnd = () => {
+//   // popup.vue also does this, so we don't need to do it twice
+//   setFocusQuene(focusQuene.value.slice(1));
+// };
 
 const initFocusModeSetting = async () => {
-  const res = await getItem(FOCUS_MODE_SETTING);
-  console.log(FOCUS_MODE_SETTING, res);
-
-  focusModeSetting.value = res;
+  focusModeSetting.value = await getItem(FOCUS_MODE_SETTING);
 };
 
 const initFocusQuene = async () => {
@@ -146,12 +156,8 @@ const addUrl = async () => {
 
   await ruleFormRef.value.validate((valid) => {
     if (valid) {
-      const allUrls = [
-        ...focusModeSetting.value.urls,
-        { url: ruleForm.value.url },
-      ];
-      setItem(URLS, allUrls);
       focusModeSetting.value.urls.push({ url: ruleForm.value.url });
+      setFocusSetting(focusModeSetting.value);
 
       ElMessage({
         type: 'success',
@@ -180,6 +186,7 @@ const handleButtonClicked = (url: IUrl) => {
         ...leftUrls,
       ]);
       focusModeSetting.value.urls = leftUrls;
+      setFocusSetting(focusModeSetting.value);
       ElMessage({
         type: 'success',
         message: 'Delete completed',
@@ -229,21 +236,13 @@ initFocusModeSetting();
 
       <!-- S Coundown section -->
       <div class="countdown-container">
-        <vue-countdown v-if="focusQuene.length && focusQuene[0].stage === 'focusing'" auto-start :time="countdown"
-          @progress="(data: ICountdown) => onCountdownProgress(data)" @end="onCountdownEnd"
+        <vue-countdown v-if="focusQuene.length" auto-start :time="countdown"
+          @progress="(data: ICountdown) => onCountdownProgress(data)" @end="initFocusQuene"
           v-slot="{ hours, minutes, seconds }">
-          {{ `${focusQuene[0].stage}
-          Remaining：🕔 ${hours} hrs, ${minutes} minutes, ${seconds} seconds.` }}
+          <h2 class="subtitle">{{ focusQuene[0].stage }}</h2>
+          {{ `Remaining：🕔 ${hours} hrs, ${minutes} minutes, ${seconds} seconds.` }}
+          <div v-if="focusQuene.length">Rounds left: {{ Math.floor(focusQuene.length / 2) }}</div>
         </vue-countdown>
-        <vue-countdown v-if="focusQuene.length && focusQuene[0].stage === 'relaxing'" auto-start :time="countdown"
-          @progress="(data: ICountdown) => onCountdownProgress(data)" @end="onCountdownEnd"
-          v-slot="{ hours, minutes, seconds }">
-          {{ `${focusQuene[0].stage}
-          Remaining：🕔 ${hours} hrs, ${minutes} minutes, ${seconds} seconds.` }}
-        </vue-countdown>
-
-        <br>
-        Rounds left: {{ Math.floor(focusQuene.length / 2) }}
       </div>
       <!-- E Coundown section -->
     </div>
@@ -252,7 +251,7 @@ initFocusModeSetting();
     <!-- S URL Section -->
     <div>
       <div>
-        <div class="semi-bold text-14">Focus Mode Blocklist</div>
+        <div class="semi-bold text-14">Focus Mode Block Settings</div>
         <div class="flex items-center py-2">
           <div>Same as site settings?</div>
           <el-radio-group class="ml-4" @change="handleSameChange" :model-value="sameSetting">
@@ -260,37 +259,40 @@ initFocusModeSetting();
             <el-radio-button label="OFF" />
           </el-radio-group>
         </div>
-
       </div>
-      <!-- S Input Section -->
-      <div class="url-input-container">
-        <el-form ref="ruleFormRef" :model="ruleForm" :rules="urlRules" @keyup.enter="addUrl">
-          <el-form-item prop="url">
-            <el-input v-model="ruleForm.url" type="text" autocomplete="off"
-              placeholder="Enter a website, such as twitter.com" clearable />
-          </el-form-item>
-        </el-form>
-        <el-button @click="addUrl">Add</el-button>
-      </div>
-      <!-- S Input Section -->
 
-      <!-- S Table Section -->
-      <el-table class="url-table" :data="focusModeSetting.urls" style="width: 100%;">
-        <el-table-column label="Blocked Url In Focus Mode">
-          <template #default="scope">
-            <img class="url-icon" :src="getIconUrl(scope.row.url)" width="20" height="20" alt="">
-            <el-tooltip class="box-item" effect="dark" :content="scope.row.url">
-              <span>{{ scope.row.url }}</span>
-            </el-tooltip>
-          </template>
-        </el-table-column>
-        <el-table-column fixed="right" width="120" label="Operation">
-          <template #default="scope">
-            <el-button size="small" type="danger" @click="handleButtonClicked(scope.row)">Delete</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- E Table Section -->
+      <div v-if="!focusModeSetting.same">
+        <!-- S Input Section -->
+        <div class="url-input-container">
+          <el-form ref="ruleFormRef" :model="ruleForm" :rules="urlRules" @keyup.enter="addUrl">
+            <el-form-item prop="url">
+              <el-input v-model="ruleForm.url" type="text" autocomplete="off"
+                placeholder="Enter a website, such as twitter.com" clearable />
+            </el-form-item>
+          </el-form>
+          <el-button @click="addUrl">Add</el-button>
+        </div>
+        <!-- S Input Section -->
+
+        <!-- S Table Section -->
+        <el-table class="url-table" :data="focusModeSetting.urls" style="width: 100%;">
+          <el-table-column label="Blocked Url In Focus Mode">
+            <template #default="scope">
+              <img class="url-icon" :src="getIconUrl(scope.row.url)" width="20" height="20" alt="">
+              <el-tooltip class="box-item" effect="dark" :content="scope.row.url">
+                <span>{{ scope.row.url }}</span>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+          <el-table-column fixed="right" width="120" label="Operation">
+            <template #default="scope">
+              <el-button size="small" type="danger" @click="handleButtonClicked(scope.row)">Delete</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- E Table Section -->
+      </div>
+
     </div>
     <!-- E URL Section -->
 
@@ -316,5 +318,13 @@ initFocusModeSetting();
   margin-right: 8px;
   border: 1px solid var(--el-color-info-light-5);
   border-radius: 4px;
+}
+
+.countdown-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 </style>
