@@ -22,6 +22,7 @@ chromeName.forEach((name) => {
     entry: `src/entry/${name}`,
     template: 'public/index.html',
     filename: `${fileName}.html`,
+    title: 'SiteBlocker',
   };
 });
 
@@ -31,7 +32,6 @@ module.exports = {
   pages,
   filenameHashing: false,
   chainWebpack: (config) => {
-    // eslint-disable-next-line import/no-extraneous-dependencies
     config.plugin('copy').use(copyWebpackPlugin, [
       {
         patterns: [
