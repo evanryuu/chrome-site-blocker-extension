@@ -94,7 +94,9 @@ initFocusQuene();
       </div>
       <div class="setting-blocks"></div>
     </div>
-    <div class="main-container">
+    <div class="main-container" :class="{
+      'in-focus':  focusQuene.length
+    }">
       <div class="tag-container">
         <el-tag v-for="tag in status" :key="tag.key" :type="tag.val ? '' : 'info'">
           {{ tag.label }} {{ tag.val ? `ON` : `OFF` }}
@@ -110,7 +112,7 @@ initFocusQuene();
         <el-button :type="buttonType" @click="addUrlToList">
           {{ buttonText }}</el-button>
       </div>
-      <div v-else>
+      <div v-else  class="countdown-content">
         <Countdown @countdown-end="() => { focusQuene = [] }" />
       </div>
 
@@ -144,6 +146,11 @@ initFocusQuene();
 .main-container {
   padding: 12px;
   position: relative;
+}
+
+.main-container.in-focus .tag-container {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .tag-container {

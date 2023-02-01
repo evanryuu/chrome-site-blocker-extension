@@ -81,8 +81,8 @@ initFocusModeSetting();
     <vue-countdown v-if="focusQuene.length" auto-start :time="countdown"
       @progress="(data: ICountdown) => onCountdownProgress(data)" @end="onCountdownEnd"
       v-slot="{ hours, minutes, seconds }">
-      <h2 class="subtitle">{{ focusQuene[0].stage }}</h2>
-      {{ `Remaining：🕔 ${hours} hrs, ${minutes} minutes, ${seconds} seconds.` }}
+      <h2 class="subtitle">{{ focusQuene[0].stage.toLocaleUpperCase() }}</h2>
+      <div>{{ `🕔 ${hours} hrs, ${minutes} mins, ${seconds} secs.` }}</div>
       <div v-if="focusQuene.length">Rounds left: {{ Math.floor(focusQuene.length / 2) }}</div>
     </vue-countdown>
   </div>
