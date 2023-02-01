@@ -1,5 +1,5 @@
 import { APP_STATUS } from '@/config/constant';
-import { getItem, initOptions } from '@/utils';
+import { getItem, initOptions, setBadgeByCurrentStatus } from '@/utils';
 
 const initBadge = async () => {
   const res = await getItem(APP_STATUS);
@@ -13,3 +13,12 @@ chrome.runtime.onInstalled.addListener(async () => {
   initOptions();
   initBadge();
 });
+
+function calibrateBadge() {
+  setTimeout(() => {
+    setBadgeByCurrentStatus();
+    calibrateBadge();
+  }, 2000);
+}
+
+calibrateBadge();
