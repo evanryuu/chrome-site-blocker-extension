@@ -202,6 +202,11 @@ const handleButtonClicked = (url: IUrl) => {
 
 const handleSameChange = (data: 'ON' | 'OFF') => {
   focusModeSetting.value.same = data === 'ON';
+  setItem(FOCUS_MODE_SETTING, focusModeSetting.value);
+};
+
+const whiteListModeChanged = () => {
+  setItem(FOCUS_MODE_SETTING, focusModeSetting.value);
 };
 
 initFocusQuene();
@@ -262,6 +267,10 @@ initFocusModeSetting();
       </div>
 
       <div v-if="!focusModeSetting.same">
+        <div class="extension-status">
+          <span>White List Mode is {{ focusModeSetting.whiteListMode ? 'on': 'off' }} </span>
+          <el-switch style="margin-left: 20px;" v-model="focusModeSetting.whiteListMode" @change="whiteListModeChanged"></el-switch>
+        </div>
         <!-- S Input Section -->
         <div class="url-input-container">
           <el-form ref="ruleFormRef" :model="ruleForm" :rules="urlRules" @keyup.enter="addUrl">
