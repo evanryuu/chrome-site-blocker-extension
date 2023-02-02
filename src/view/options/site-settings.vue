@@ -120,30 +120,20 @@ initWhiteList();
   <div id="site-settings-page">
     <div class="semi-bold text-14">General</div>
     <div class="extension-status mt-2">
-      <span>Extension is {{ appStatus ? 'on' : 'off' }} </span>
+      <span>Extension is {{ appStatus? 'on': 'off' }} </span>
       <el-switch style="margin-left: 20px;" v-model="appStatus" @change="appStatusChanged"></el-switch>
     </div>
     <div class="extension-status">
-      <span>White List Mode is {{ whiteListMode ? 'on' : 'off' }} </span>
+      <span>White List Mode is {{ whiteListMode? 'on': 'off' }} </span>
       <el-switch style="margin-left: 20px;" v-model="whiteListMode" @change="whiteListModeChanged"></el-switch>
     </div>
 
     <div class="semi-bold mt-5 text-14">Block List</div>
     <div class="url-input-container">
-      <el-form
-      ref="ruleFormRef"
-      :model="ruleForm"
-      :rules="rules"
-      @keyup.enter="addUrl"
-    >
+      <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" @submit.prevent>
         <el-form-item prop="url">
-          <el-input
-          v-model="ruleForm.url"
-          type="text"
-          autocomplete="off"
-          placeholder="Enter a website, such as twitter.com"
-          clearable
-          />
+          <el-input v-model="ruleForm.url" type="text" autocomplete="off"
+            placeholder="Enter a website, such as twitter.com" @keyup.enter="addUrl" clearable />
         </el-form-item>
       </el-form>
       <el-button @click="addUrl">Add</el-button>
@@ -160,11 +150,7 @@ initWhiteList();
       </el-table-column>
       <el-table-column fixed="right" width="120" label="Operation">
         <template #default="scope">
-          <el-button
-          size="small"
-          type="danger"
-          @click="handleButtonClicked(scope.row)"
-        >Delete</el-button>
+          <el-button size="small" type="danger" @click="handleButtonClicked(scope.row)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -175,13 +161,16 @@ initWhiteList();
 .url-input-container {
   display: flex;
 }
-.url-input-container > form {
+
+.url-input-container>form {
   flex: 1;
   max-width: 800px;
 }
-.url-input-container > button {
+
+.url-input-container>button {
   margin-left: 12px;
 }
+
 .url-icon {
   margin-right: 8px;
   border: 1px solid var(--el-color-info-light-5);

@@ -264,9 +264,9 @@ initFocusModeSetting();
       <div v-if="!focusModeSetting.same">
         <!-- S Input Section -->
         <div class="url-input-container">
-          <el-form ref="ruleFormRef" :model="ruleForm" :rules="urlRules" @keyup.enter="addUrl">
+          <el-form ref="ruleFormRef" :model="ruleForm" :rules="urlRules" @submit.prevent>
             <el-form-item prop="url">
-              <el-input v-model="ruleForm.url" type="text" autocomplete="off"
+              <el-input v-model="ruleForm.url" type="text" autocomplete="off" @keyup.enter="addUrl"
                 placeholder="Enter a website, such as twitter.com" clearable />
             </el-form-item>
           </el-form>
