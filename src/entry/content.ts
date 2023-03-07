@@ -15,7 +15,7 @@ import type { IStageQuene } from '@/utils';
 import { IUrl } from '@/@types/index.d';
 
 const img = document.createElement('img');
-const iconUrl = chrome.runtime.getURL(`images/pic${getRandomNumber(1, 4)}.png`);
+const iconUrl = chrome.runtime.getURL(`images/pic${getRandomNumber(1, 10)}.png`);
 img.src = iconUrl;
 
 const blockPage = () => {
