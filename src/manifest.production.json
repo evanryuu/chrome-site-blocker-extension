@@ -1,11 +1,13 @@
 {
     "manifest_version": 3,
-    "name": "Site Blocker",
-    "description": "Block sites and help to stay focused",
-    "version": "0.0.1",
-    "background": {
-        "service_worker": "/background.js"
-    },
+    "name": "SiteBlocker",
+    "version": "0.0.2",
+    "description": "A Chrome extension to block distracting websites",
+    "permissions": [
+        "storage",
+        "tabs",
+        "webNavigation"
+    ],
     "action": {
         "default_popup": "popup.html",
         "default_icon": {
@@ -15,30 +17,23 @@
             "128": "images/icon.png"
           }
     },
+    "web_accessible_resources": [{
+        "resources": ["options.html", "images/*.png"],
+        "matches": ["<all_urls>"]
+    }],
     "icons": {
         "16": "images/icon.png",
         "32": "images/icon.png",
         "48": "images/icon.png",
         "128": "images/icon.png"
-      },
-    "web_accessible_resources": [{
-        "resources": ["options.html", "images/*.png", "images/BlockSite-002b.jpg"],
-        "matches": ["<all_urls>"]
-      }],
+    },
+    "background": {
+        "service_worker": "js/background.js"
+    },
     "content_scripts": [
         {
-            "run_at": "document_start",
-            "matches": [
-                "<all_urls>"
-            ],
-            "js": [
-                "/content.js"
-            ]
+            "matches": ["<all_urls>"],
+            "js": ["js/content.js"]
         }
-    ],
-    "options_page": "options.html",
-    "permissions": [
-        "storage",
-        "tabs"
     ]
 }

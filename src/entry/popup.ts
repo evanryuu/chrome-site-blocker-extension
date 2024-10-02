@@ -9,6 +9,6 @@ import '@/styles/index.css';
 
 const app = createApp(App);
 
-app.component(VueCountdown.name, VueCountdown);
+app.component(VueCountdown.name!, VueCountdown);
 app.use(ElementPlus);
 app.mount('#app');
