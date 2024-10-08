@@ -13,7 +13,7 @@ export const copyPlugin: RsbuildPlugin = {
         const distPath = path.resolve('dist');
         console.log(`Copying files to: ${distPath}`);
 
-        // Ensure the directory exists
+        // Ensure the directory existsx
         fs.ensureDirSync(distPath);
 
         // Copy manifest file

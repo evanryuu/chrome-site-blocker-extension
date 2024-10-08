@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "SiteBlocker",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "A Chrome extension to block distracting websites",
     "permissions": [
         "storage",
