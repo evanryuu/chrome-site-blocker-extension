@@ -30,8 +30,8 @@ export const copyPlugin: RsbuildPlugin = {
         // Only copy additional files in development mode
         if (isDevMode) {
           // Clean specific directories instead of the entire dist folder
-          fs.emptyDirSync(path.join(distPath, 'js'));
-          fs.emptyDirSync(path.join(distPath, 'css'));
+          // fs.emptyDirSync(path.join(distPath, 'js'));
+          // fs.emptyDirSync(path.join(distPath, 'css'));
 
           // Copy public folder
           const publicSrc = path.resolve('public');
@@ -46,6 +46,10 @@ export const copyPlugin: RsbuildPlugin = {
       };
 
       // Run copyFiles after build for both dev and prod modes
+      api.onDevCompileDone(() => {
+        console.log('Running copyFiles after dev compile');
+        copyFiles();
+      });
       api.onAfterBuild(() => {
         console.log('Running copyFiles after build');
         copyFiles();

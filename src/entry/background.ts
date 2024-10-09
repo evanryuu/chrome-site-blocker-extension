@@ -2,17 +2,6 @@ import { APP_STATUS, URLS, WHITE_LIST_MODE, FOCUS_MODE_SETTING, WHITE_LIST_URLS 
 import { getItem, initFocusQuene } from '@/utils';
 import type { IUrl } from '@/@types/index.d';
 
-// 新增的辅助函数，用于获取域名
-function getDomain(urlString: string): string {
-  try {
-    const url = new URL(urlString);
-    return url.hostname;
-  } catch (e) {
-    console.error('Invalid URL:', urlString);
-    return urlString; // 如果URL无效，返回原始字符串
-  }
-}
-
 const shouldBlockNavigation = async (url: string) => {
   // 首先检查是否是扩展的阻止页面
   if (url.startsWith(chrome.runtime.getURL(''))) {
@@ -37,9 +26,9 @@ const shouldBlockNavigation = async (url: string) => {
   }
 
   const isUrlMatched = urls.some((u) => {
-    const urlDomain = getDomain(url);
-    const blockDomain = getDomain(u.url);
-    return urlDomain === blockDomain;
+    // TODO includes 可以，找逻辑错误
+    // return url.startsWith(u.url);
+    return url.includes(u.url);
   });
 
   const focusQuene = await initFocusQuene();
