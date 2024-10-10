@@ -26,9 +26,8 @@ const shouldBlockNavigation = async (url: string) => {
   }
 
   const isUrlMatched = urls.some((u) => {
-    // TODO includes 可以，找逻辑错误
-    // return url.startsWith(u.url);
-    return url.includes(u.url);
+    const newUrl = new URL(url);
+    return newUrl.host.split('www.').pop()?.startsWith(u.url);
   });
 
   const focusQuene = await initFocusQuene();
